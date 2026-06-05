@@ -7,7 +7,8 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
     title="AIHireX Auth Service",
-    version="1.0.0"
+    version="1.0.0",
+    root_path="/auth"
 )
 
 app.include_router(
