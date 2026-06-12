@@ -4,6 +4,7 @@ from app.db.database import Base, engine
 from app.models.resume import Resume
 
 from fastapi import FastAPI, UploadFile, File, Depends
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 
 from app.db.dependencies import get_db
@@ -12,7 +13,17 @@ from app.db.database import Base, engine
 
 Base.metadata.create_all(bind=engine)
 app = FastAPI(title="Resume Service")
-
+from app.utils.parser import extract_skills
+# CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 UPLOAD_DIR = "uploads"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
@@ -39,6 +50,8 @@ async def upload_resume(
     db.add(resume)
     db.commit()
     db.refresh(resume)
+
+    skills = extract_skills(filepath)
 
     return {
         "id": resume.id,
