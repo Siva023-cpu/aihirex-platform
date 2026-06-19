@@ -12,79 +12,74 @@ export default function Navbar() {
   return (
     <nav
       style={{
+        position: "sticky",
+        top: 0,
+        zIndex: 1000,
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
-        padding: "20px 60px",
-        background: "#111827",
-        color: "white",
+        padding: "18px 60px",
+        background: "rgba(255,255,255,0.75)",
+        backdropFilter: "blur(20px)",
+        borderBottom: "1px solid rgba(0,0,0,0.05)",
+        boxShadow: "0 4px 20px rgba(0,0,0,0.05)",
       }}
     >
       {/* Logo */}
       <Link
         to="/"
         style={{
-          color: "white",
           textDecoration: "none",
         }}
       >
-        <h2 style={{ margin: 0 }}>AIHireX</h2>
+        <h2
+          style={{
+            margin: 0,
+            fontWeight: "800",
+            fontSize: "28px",
+            background:
+              "linear-gradient(135deg,#2563eb,#7c3aed)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+          }}
+        >
+          🚀 AIHireX
+        </h2>
       </Link>
 
       {/* Navigation */}
       <div
         style={{
           display: "flex",
-          gap: "20px",
           alignItems: "center",
+          gap: "25px",
         }}
       >
-        <Link
-          to="/"
-          style={{ color: "white", textDecoration: "none" }}
-        >
-          Home
-        </Link>
-
-        <Link
-          to="/jobs"
-          style={{ color: "white", textDecoration: "none" }}
-        >
-          Jobs
-        </Link>
-
-        <Link
-          to="/upload"
-          style={{ color: "white", textDecoration: "none" }}
-        >
-          Resume
-        </Link>
-
-        <Link
-          to="/match-results"
-          style={{ color: "white", textDecoration: "none" }}
-        >
-          AI Match
-        </Link>
+        <NavItem to="/" label="Home" />
+        <NavItem to="/jobs" label="Jobs" />
+        <NavItem to="/upload" label="Resume" />
+        <NavItem to="/match" label="AI Match" />
 
         {token ? (
           <>
-            <Link
+            <NavItem
               to="/dashboard"
-              style={{ color: "white", textDecoration: "none" }}
-            >
-              Dashboard
-            </Link>
+              label="Dashboard"
+            />
 
             <button
               onClick={logout}
               style={{
-                background: "#dc2626",
+                background:
+                  "linear-gradient(135deg,#ef4444,#dc2626)",
                 color: "white",
                 border: "none",
-                padding: "8px 16px",
-                borderRadius: "8px",
+                padding: "10px 18px",
+                borderRadius: "12px",
                 cursor: "pointer",
+                fontWeight: "600",
+                boxShadow:
+                  "0 8px 20px rgba(239,68,68,0.25)",
               }}
             >
               Logout
@@ -92,22 +87,59 @@ export default function Navbar() {
           </>
         ) : (
           <>
-            <Link
+            <NavItem
               to="/register"
-              style={{ color: "white", textDecoration: "none" }}
-            >
-              Register
-            </Link>
+              label="Register"
+            />
 
             <Link
               to="/login"
-              style={{ color: "white", textDecoration: "none" }}
+              style={{
+                textDecoration: "none",
+              }}
             >
-              Login
+              <button
+                style={{
+                  background:
+                    "linear-gradient(135deg,#2563eb,#1d4ed8)",
+                  color: "white",
+                  border: "none",
+                  padding: "10px 18px",
+                  borderRadius: "12px",
+                  cursor: "pointer",
+                  fontWeight: "600",
+                  boxShadow:
+                    "0 8px 20px rgba(37,99,235,0.25)",
+                }}
+              >
+                Login
+              </button>
             </Link>
           </>
         )}
       </div>
     </nav>
+  );
+}
+
+function NavItem({ to, label }) {
+  return (
+    <Link
+      to={to}
+      style={{
+        color: "#334155",
+        textDecoration: "none",
+        fontWeight: "600",
+        transition: "0.3s",
+      }}
+      onMouseEnter={(e) => {
+        e.target.style.color = "#2563eb";
+      }}
+      onMouseLeave={(e) => {
+        e.target.style.color = "#334155";
+      }}
+    >
+      {label}
+    </Link>
   );
 }

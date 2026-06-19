@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import api from "../services/api";
 
 export default function Login() {
@@ -17,95 +17,150 @@ export default function Login() {
     });
   };
 
-const loginUser = async () => {
-  try {
-    const data = new URLSearchParams();
+  const loginUser = async () => {
+    try {
+      const data = new URLSearchParams();
 
-    // If your backend logs in with email:
-    data.append("username", form.email);
+      data.append("username", form.email);
+      data.append("password", form.password);
 
-    // If it logs in with username instead,
-    // change form.email to form.username.
-    data.append("password", form.password);
+      const res = await api.post("/login", data, {
+        headers: {
+          "Content-Type":
+            "application/x-www-form-urlencoded",
+        },
+      });
 
-    const res = await api.post("/login", data, {
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-    });
+      localStorage.setItem(
+        "token",
+        res.data.access_token || res.data.token
+      );
 
-    localStorage.setItem(
-      "token",
-      res.data.access_token || res.data.token
-    );
-
-    console.log(res.data);
-
-    navigate("/dashboard");
-  } catch (err) {
-    console.log(err.response?.data || err);
-    alert("Login Failed");
-  }
-};
+      navigate("/dashboard");
+    } catch (err) {
+      console.log(err.response?.data || err);
+      alert("Login Failed");
+    }
+  };
 
   return (
     <div
       style={{
-        maxWidth: "400px",
-        margin: "60px auto",
-        padding: "30px",
-        boxShadow: "0 5px 15px rgba(0,0,0,.1)",
-        borderRadius: "10px",
-        background: "white",
+        minHeight: "100vh",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        background:
+          "linear-gradient(135deg,#dbeafe,#eff6ff,#ffffff)",
+        padding: "20px",
       }}
     >
-      <h2
+      <div
         style={{
-          textAlign: "center",
-          marginBottom: "20px",
-          color: "#2563eb",
+          width: "450px",
+          background: "rgba(255,255,255,0.75)",
+          backdropFilter: "blur(20px)",
+          padding: "40px",
+          borderRadius: "24px",
+          boxShadow:
+            "0 20px 50px rgba(0,0,0,0.08)",
+          border:
+            "1px solid rgba(255,255,255,0.4)",
         }}
       >
-        Login
-      </h2>
+        <div style={{ textAlign: "center" }}>
+          <h1
+            style={{
+              color: "#2563eb",
+              marginBottom: "10px",
+            }}
+          >
+            Welcome Back 👋
+          </h1>
 
-      <input
-        name="email"
-        placeholder="Email"
-        onChange={handleChange}
-        style={{
-          width: "100%",
-          padding: "10px",
-          margin: "10px 0",
-        }}
-      />
+          <p
+            style={{
+              color: "#64748b",
+              marginBottom: "25px",
+            }}
+          >
+            Sign in to continue to AIHireX
+          </p>
+        </div>
 
-      <input
-        type="password"
-        name="password"
-        placeholder="Password"
-        onChange={handleChange}
-        style={{
-          width: "100%",
-          padding: "10px",
-          margin: "10px 0",
-        }}
-      />
+        <input
+          name="email"
+          placeholder="Email Address"
+          onChange={handleChange}
+          style={{
+            width: "100%",
+            padding: "14px",
+            borderRadius: "12px",
+            border: "1px solid #cbd5e1",
+            marginBottom: "15px",
+            fontSize: "15px",
+            outline: "none",
+            boxSizing: "border-box",
+          }}
+        />
 
-      <button
-        onClick={loginUser}
-        style={{
-          width: "100%",
-          padding: "12px",
-          background: "#2563eb",
-          color: "white",
-          border: "none",
-          borderRadius: "8px",
-          cursor: "pointer",
-        }}
-      >
-        Login
-      </button>
+        <input
+          type="password"
+          name="password"
+          placeholder="Password"
+          onChange={handleChange}
+          style={{
+            width: "100%",
+            padding: "14px",
+            borderRadius: "12px",
+            border: "1px solid #cbd5e1",
+            marginBottom: "20px",
+            fontSize: "15px",
+            outline: "none",
+            boxSizing: "border-box",
+          }}
+        />
+
+        <button
+          onClick={loginUser}
+          style={{
+            width: "100%",
+            padding: "14px",
+            border: "none",
+            borderRadius: "12px",
+            background:
+              "linear-gradient(135deg,#2563eb,#1d4ed8)",
+            color: "white",
+            fontWeight: "700",
+            fontSize: "16px",
+            cursor: "pointer",
+            boxShadow:
+              "0 10px 25px rgba(37,99,235,0.25)",
+          }}
+        >
+          Login
+        </button>
+
+        <p
+          style={{
+            textAlign: "center",
+            marginTop: "20px",
+            color: "#64748b",
+          }}
+        >
+          Don't have an account?{" "}
+          <Link
+            to="/register"
+            style={{
+              color: "#2563eb",
+              fontWeight: "600",
+              textDecoration: "none",
+            }}
+          >
+            Register
+          </Link>
+        </p>
+      </div>
     </div>
   );
 }

@@ -18,7 +18,7 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/upload" element={<UploadResume />} />
         <Route path="/jobs" element={<Jobs />} />
-        <Route path="/match-results" element={<MatchResults />} />
+        <Route path="/match" element={<MatchResults />} />
       </Routes>
     </BrowserRouter>
   );

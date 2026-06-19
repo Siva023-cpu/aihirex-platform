@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import api from "../services/api";
 
 export default function Register() {
@@ -11,6 +11,8 @@ export default function Register() {
     password: "",
   });
 
+  const [loading, setLoading] = useState(false);
+
   const handleChange = (e) => {
     setForm({
       ...form,
@@ -20,7 +22,8 @@ export default function Register() {
 
   const registerUser = async () => {
     try {
-      console.log(api.defaults.baseURL + "/register");
+      setLoading(true);
+
       await api.post("/register", form);
 
       alert("Registration Successful!");
@@ -30,81 +33,149 @@ export default function Register() {
 
       alert(
         err.response?.data?.detail ||
-        "Registration Failed"
+          "Registration Failed"
       );
+    } finally {
+      setLoading(false);
     }
-    
   };
 
   return (
     <div
       style={{
-        maxWidth: "450px",
-        margin: "60px auto",
-        padding: "30px",
-        background: "white",
-        borderRadius: "10px",
-        boxShadow: "0 5px 15px rgba(0,0,0,.1)",
+        minHeight: "100vh",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        background:
+          "linear-gradient(135deg,#dbeafe,#eff6ff,#ffffff)",
+        padding: "20px",
       }}
     >
-      <h2
+      <div
         style={{
-          textAlign: "center",
-          color: "#2563eb",
-          marginBottom: "20px",
+          width: "100%",
+          maxWidth: "480px",
+          background: "rgba(255,255,255,0.8)",
+          backdropFilter: "blur(20px)",
+          border: "1px solid rgba(255,255,255,0.4)",
+          borderRadius: "24px",
+          padding: "40px",
+          boxShadow:
+            "0 20px 40px rgba(37,99,235,0.15)",
         }}
       >
-        Create Account
-      </h2>
+        <div
+          style={{
+            textAlign: "center",
+            marginBottom: "30px",
+          }}
+        >
+          <h1
+            style={{
+              color: "#2563eb",
+              marginBottom: "10px",
+              fontSize: "34px",
+            }}
+          >
+            🚀 AIHireX
+          </h1>
 
-      <input
-        name="username"
-        placeholder="Username"
-        onChange={handleChange}
-        style={{
-          width: "100%",
-          padding: "10px",
-          margin: "10px 0",
-        }}
-      />
+          <h2
+            style={{
+              margin: 0,
+              color: "#1e293b",
+            }}
+          >
+            Create Account
+          </h2>
 
-      <input
-        name="email"
-        placeholder="Email"
-        onChange={handleChange}
-        style={{
-          width: "100%",
-          padding: "10px",
-          margin: "10px 0",
-        }}
-      />
+          <p
+            style={{
+              color: "#64748b",
+              marginTop: "10px",
+            }}
+          >
+            Join AI-powered recruitment platform
+          </p>
+        </div>
 
-      <input
-        type="password"
-        name="password"
-        placeholder="Password"
-        onChange={handleChange}
-        style={{
-          width: "100%",
-          padding: "10px",
-          margin: "10px 0",
-        }}
-      />
+        <input
+          name="username"
+          placeholder="Username"
+          onChange={handleChange}
+          style={inputStyle}
+        />
 
-      <button
-        onClick={registerUser}
-        style={{
-          width: "100%",
-          padding: "12px",
-          background: "#16a34a",
-          color: "white",
-          border: "none",
-          borderRadius: "8px",
-          cursor: "pointer",
-        }}
-      >
-        Register
-      </button>
+        <input
+          name="email"
+          type="email"
+          placeholder="Email Address"
+          onChange={handleChange}
+          style={inputStyle}
+        />
+
+        <input
+          type="password"
+          name="password"
+          placeholder="Password"
+          onChange={handleChange}
+          style={inputStyle}
+        />
+
+        <button
+          onClick={registerUser}
+          disabled={loading}
+          style={{
+            width: "100%",
+            padding: "14px",
+            background:
+              "linear-gradient(135deg,#2563eb,#1d4ed8)",
+            color: "white",
+            border: "none",
+            borderRadius: "12px",
+            cursor: "pointer",
+            fontWeight: "600",
+            fontSize: "16px",
+            marginTop: "10px",
+          }}
+        >
+          {loading
+            ? "Creating Account..."
+            : "Create Account"}
+        </button>
+
+        <p
+          style={{
+            textAlign: "center",
+            marginTop: "20px",
+            color: "#64748b",
+          }}
+        >
+          Already have an account?{" "}
+          <Link
+            to="/login"
+            style={{
+              color: "#2563eb",
+              textDecoration: "none",
+              fontWeight: "600",
+            }}
+          >
+            Login
+          </Link>
+        </p>
+      </div>
     </div>
   );
 }
+
+const inputStyle = {
+  width: "100%",
+  padding: "14px",
+  marginBottom: "15px",
+  borderRadius: "12px",
+  border: "1px solid #cbd5e1",
+  outline: "none",
+  fontSize: "15px",
+  boxSizing: "border-box",
+};

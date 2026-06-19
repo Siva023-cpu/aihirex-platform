@@ -5,6 +5,9 @@ from app.db.session import SessionLocal
 from app.schemas.job import JobCreate, JobUpdate
 from app.services.job_service import JobService
 
+from app.models.application import Application
+from app.schemas.application import ApplicationCreate
+
 router = APIRouter()
 
 
@@ -41,3 +44,22 @@ def update_job(
 @router.delete("/jobs/{job_id}")
 def delete_job(job_id: int, db: Session = Depends(get_db)):
     return JobService.delete_job(db, job_id)
+
+@router.post("/apply")
+def apply_job(data: ApplicationCreate):
+
+    db = SessionLocal()
+
+    application = Application(
+        user_email=data.user_email,
+        job_title=data.job_title,
+        company=data.company,
+        match_score=data.match_score
+    )
+
+    db.add(application)
+    db.commit()
+
+    return {
+        "message": "Application Submitted"
+    }

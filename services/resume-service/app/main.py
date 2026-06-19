@@ -1,29 +1,31 @@
 import os
-
-from app.db.database import Base, engine
-from app.models.resume import Resume
-
 from fastapi import FastAPI, UploadFile, File, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 
+from app.db.database import Base, engine
 from app.db.dependencies import get_db
 from app.models.resume import Resume
-from app.db.database import Base, engine
+from app.utils.parser import extract_skills
+
+# Create tables
 
 Base.metadata.create_all(bind=engine)
+
 app = FastAPI(title="Resume Service")
-from app.utils.parser import extract_skills
+
 # CORS
+
 app.add_middleware(
-    CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",
-    ],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+CORSMiddleware,
+allow_origins=[
+"http://localhost:5173",
+],
+allow_credentials=True,
+allow_methods=["*"],
+allow_headers=["*"],
 )
+
 UPLOAD_DIR = "uploads"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
@@ -42,7 +44,7 @@ async def upload_resume(
         buffer.write(await file.read())
 
     resume = Resume(
-        user_id=1,   # temporary until JWT integration
+        user_id=1,
         filename=file.filename,
         filepath=filepath
     )
@@ -56,5 +58,7 @@ async def upload_resume(
     return {
         "id": resume.id,
         "filename": resume.filename,
+        "skills": skills,
         "status": "uploaded"
     }
+
