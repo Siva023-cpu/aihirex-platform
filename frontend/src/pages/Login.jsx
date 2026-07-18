@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../services/api";
+import Navbar from "../components/Navbar";
+import PageWrapper from "../components/PageWrapper";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -36,6 +38,11 @@ export default function Login() {
         res.data.access_token || res.data.token
       );
 
+      localStorage.setItem(
+        "user_email",
+        form.email
+      );
+
       navigate("/dashboard");
     } catch (err) {
       console.log(err.response?.data || err);
@@ -44,123 +51,127 @@ export default function Login() {
   };
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        background:
-          "linear-gradient(135deg,#dbeafe,#eff6ff,#ffffff)",
-        padding: "20px",
-      }}
-    >
-      <div
-        style={{
-          width: "450px",
-          background: "rgba(255,255,255,0.75)",
-          backdropFilter: "blur(20px)",
-          padding: "40px",
-          borderRadius: "24px",
-          boxShadow:
-            "0 20px 50px rgba(0,0,0,0.08)",
-          border:
-            "1px solid rgba(255,255,255,0.4)",
-        }}
-      >
-        <div style={{ textAlign: "center" }}>
-          <h1
-            style={{
-              color: "#2563eb",
-              marginBottom: "10px",
-            }}
-          >
-            Welcome Back 👋
-          </h1>
+    <>
+      <Navbar />
 
-          <p
-            style={{
-              color: "#64748b",
-              marginBottom: "25px",
-            }}
-          >
-            Sign in to continue to AIHireX
-          </p>
-        </div>
-
-        <input
-          name="email"
-          placeholder="Email Address"
-          onChange={handleChange}
+      <PageWrapper>
+        <div
           style={{
-            width: "100%",
-            padding: "14px",
-            borderRadius: "12px",
-            border: "1px solid #cbd5e1",
-            marginBottom: "15px",
-            fontSize: "15px",
-            outline: "none",
-            boxSizing: "border-box",
-          }}
-        />
-
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          onChange={handleChange}
-          style={{
-            width: "100%",
-            padding: "14px",
-            borderRadius: "12px",
-            border: "1px solid #cbd5e1",
-            marginBottom: "20px",
-            fontSize: "15px",
-            outline: "none",
-            boxSizing: "border-box",
-          }}
-        />
-
-        <button
-          onClick={loginUser}
-          style={{
-            width: "100%",
-            padding: "14px",
-            border: "none",
-            borderRadius: "12px",
+            minHeight: "100vh",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
             background:
-              "linear-gradient(135deg,#2563eb,#1d4ed8)",
-            color: "white",
-            fontWeight: "700",
-            fontSize: "16px",
-            cursor: "pointer",
-            boxShadow:
-              "0 10px 25px rgba(37,99,235,0.25)",
+              "linear-gradient(135deg,#dbeafe,#eff6ff,#ffffff)",
+            padding: "20px",
           }}
         >
-          Login
-        </button>
-
-        <p
-          style={{
-            textAlign: "center",
-            marginTop: "20px",
-            color: "#64748b",
-          }}
-        >
-          Don't have an account?{" "}
-          <Link
-            to="/register"
+          <div
             style={{
-              color: "#2563eb",
-              fontWeight: "600",
-              textDecoration: "none",
+              width: "450px",
+              background: "rgba(255,255,255,0.75)",
+              backdropFilter: "blur(20px)",
+              padding: "40px",
+              borderRadius: "24px",
+              boxShadow:
+                "0 20px 50px rgba(0,0,0,0.08)",
+              border:
+                "1px solid rgba(255,255,255,0.4)",
             }}
           >
-            Register
-          </Link>
-        </p>
-      </div>
-    </div>
+            <div style={{ textAlign: "center" }}>
+              <h1
+                style={{
+                  color: "#2563eb",
+                  marginBottom: "10px",
+                }}
+              >
+                Welcome Back 👋
+              </h1>
+
+              <p
+                style={{
+                  color: "#64748b",
+                  marginBottom: "25px",
+                }}
+              >
+                Sign in to continue to AIHireX
+              </p>
+            </div>
+
+            <input
+              name="email"
+              placeholder="Email Address"
+              value={form.email}
+              onChange={handleChange}
+              style={{
+                width: "100%",
+                padding: "14px",
+                borderRadius: "12px",
+                border: "1px solid #cbd5e1",
+                marginBottom: "15px",
+                fontSize: "15px",
+                boxSizing: "border-box",
+              }}
+            />
+
+            <input
+              type="password"
+              name="password"
+              placeholder="Password"
+              value={form.password}
+              onChange={handleChange}
+              style={{
+                width: "100%",
+                padding: "14px",
+                borderRadius: "12px",
+                border: "1px solid #cbd5e1",
+                marginBottom: "20px",
+                fontSize: "15px",
+                boxSizing: "border-box",
+              }}
+            />
+
+            <button
+              onClick={loginUser}
+              style={{
+                width: "100%",
+                padding: "14px",
+                border: "none",
+                borderRadius: "12px",
+                background:
+                  "linear-gradient(135deg,#2563eb,#1d4ed8)",
+                color: "white",
+                fontWeight: "700",
+                fontSize: "16px",
+                cursor: "pointer",
+              }}
+            >
+              Login
+            </button>
+
+            <p
+              style={{
+                textAlign: "center",
+                marginTop: "20px",
+                color: "#64748b",
+              }}
+            >
+              Don't have an account?{" "}
+              <Link
+                to="/register"
+                style={{
+                  color: "#2563eb",
+                  textDecoration: "none",
+                  fontWeight: "600",
+                }}
+              >
+                Register
+              </Link>
+            </p>
+          </div>
+        </div>
+      </PageWrapper>
+    </>
   );
 }

@@ -6,7 +6,7 @@ import AIInsights from "../components/AIInsights";
 import LearningRoadmap from "../components/LearningRoadmap";
 import SkillGapAnalysis from "../components/SkillGapAnalysis";
 import JobReadiness from "../components/JobReadiness";
-
+import PageWrapper from "../components/PageWrapper";
 
 export default function MatchResults() {
   const [result, setResult] = useState(null);

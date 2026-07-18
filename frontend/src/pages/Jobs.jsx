@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import api from "../services/api";
+import PageWrapper from "../components/PageWrapper";
 
 export default function Jobs() {
   const [jobs, setJobs] = useState([]);

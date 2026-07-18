@@ -1,16 +1,15 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api.routes import router
+from .api.routes import router
+from .api.application_routes import router as application_router
 
-from app.db.session import engine
-from app.db.base import Base
+from .db.session import engine, SessionLocal
+from .db.base import Base
 
 # Import models so SQLAlchemy knows about them
-from app.models.job import Job
-from app.models.application import Application
-from app.db.session import SessionLocal
-from app.models.job import Job
+from .models.job import Job
+from .models.application import Application
 
 Base.metadata.create_all(bind=engine)
 
@@ -72,3 +71,4 @@ app.add_middleware(
 )
 
 app.include_router(router)
+app.include_router(application_router)

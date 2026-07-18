@@ -56,16 +56,14 @@ export default function Navbar() {
         }}
       >
         <NavItem to="/" label="Home" />
-        <NavItem to="/jobs" label="Jobs" />
-        <NavItem to="/upload" label="Resume" />
-        <NavItem to="/match" label="AI Match" />
 
         {token ? (
           <>
-            <NavItem
-              to="/dashboard"
-              label="Dashboard"
-            />
+            <NavItem to="/dashboard" label="Dashboard" />
+            <NavItem to="/jobs" label="Jobs" />
+            <NavItem to="/upload" label="Resume" />
+            <NavItem to="/match" label="AI Match" />
+            <NavItem to="/recruiter" label="Recruiter" />
 
             <button
               onClick={logout}
@@ -87,10 +85,7 @@ export default function Navbar() {
           </>
         ) : (
           <>
-            <NavItem
-              to="/register"
-              label="Register"
-            />
+            <NavItem to="/register" label="Register" />
 
             <Link
               to="/login"

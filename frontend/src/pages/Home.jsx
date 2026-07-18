@@ -5,6 +5,7 @@ import HowItWorks from "../components/HowItWorks";
 import JobsPreview from "../components/JobsPreview";
 import ResumeUpload from "../components/ResumeUpload";
 import Footer from "../components/Footer";
+import PageWrapper from "../components/PageWrapper";
 
 export default function Home() {
   return (

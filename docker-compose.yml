@@ -1,107 +1,232 @@
-version: "3.9"
-
 services:
 
   postgres:
     image: postgres:15
     container_name: aihirex-postgres
     restart: always
+
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: aihirex
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+
     ports:
       - "5432:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+    networks:
+      - aihirex-network
+
 
   redis:
     image: redis:7
     container_name: aihirex-redis
     restart: always
+
     ports:
       - "6379:6379"
+
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+    networks:
+      - aihirex-network
+
 
   rabbitmq:
     image: rabbitmq:3-management
     container_name: aihirex-rabbitmq
     restart: always
+
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+
     ports:
       - "5672:5672"
       - "15672:15672"
 
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+    networks:
+      - aihirex-network
+
+
+  frontend:
+    image: vasgrills/aihirex-frontend:latest
+    container_name: aihirex-frontend
+    restart: always
+
+    ports:
+      - "5173:80"
+
+    depends_on:
+      auth-service:
+        condition: service_started
+
+    networks:
+      - aihirex-network
+
+
   auth-service:
-    build:
-      context: ./services/auth-service
+    image: vasgrills/aihirex-auth-service:latest
     container_name: aihirex-auth-service
     restart: always
+
     ports:
       - "8000:8000"
+
+    env_file:
+      - .env
+
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
+
+    networks:
+      - aihirex-network
+
 
   resume-service:
-    build:
-      context: ./services/resume-service
+    image: vasgrills/aihirex-resume-service:latest
     container_name: aihirex-resume-service
     restart: always
+
     ports:
       - "8001:8001"
+
+    env_file:
+      - .env
+
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
+
+    networks:
+      - aihirex-network
+
 
   job-service:
-    build:
-      context: ./services/job-service
+    image: vasgrills/aihirex-job-service:latest
     container_name: aihirex-job-service
     restart: always
+
     ports:
       - "8002:8002"
+
+    env_file:
+      - .env
+
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
+
+    networks:
+      - aihirex-network
+
 
   matching-service:
-    build:
-      context: ./services/matching-service
+    image: vasgrills/aihirex-matching-service:latest
     container_name: aihirex-matching-service
     restart: always
+
     ports:
       - "8003:8003"
+
+    env_file:
+      - .env
+
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
+
+    networks:
+      - aihirex-network
+
 
   ai-worker:
-    build:
-      context: ./services/ai-worker
+    image: vasgrills/aihirex-ai-worker:latest
     container_name: aihirex-ai-worker
     restart: always
-    ports:
-      - "8004:8004"
+
+    env_file:
+      - .env
+
     depends_on:
-      - matching-service
-      - rabbitmq
-      - redis
+      matching-service:
+        condition: service_started
+
+      redis:
+        condition: service_healthy
+
+      rabbitmq:
+        condition: service_healthy
+
+    networks:
+      - aihirex-network
+
 
   notification-service:
-    build:
-      context: ./services/notification-service
+    image: vasgrills/aihirex-notification-service:latest
     container_name: aihirex-notification-service
     restart: always
+
     ports:
       - "8005:8005"
+
+    env_file:
+      - .env
+
     depends_on:
-      - rabbitmq
-  
+      rabbitmq:
+        condition: service_healthy
+
+    networks:
+      - aihirex-network
+
+
   nginx:
     image: nginx:latest
     container_name: aihirex-nginx
     restart: always
+
     ports:
       - "80:80"
+
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+
     depends_on:
+      - frontend
       - auth-service
       - resume-service
       - job-service
       - matching-service
-      - ai-worker
       - notification-service
+
+    networks:
+      - aihirex-network
+
+
+volumes:
+  postgres_data:
+
+
+networks:
+  aihirex-network:
+    driver: bridge

@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../services/api";
+import Navbar from "../components/Navbar";
+import PageWrapper from "../components/PageWrapper";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -41,131 +43,141 @@ export default function Register() {
   };
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        background:
-          "linear-gradient(135deg,#dbeafe,#eff6ff,#ffffff)",
-        padding: "20px",
-      }}
-    >
+    <>
+      <Navbar />
+
       <div
         style={{
-          width: "100%",
-          maxWidth: "480px",
-          background: "rgba(255,255,255,0.8)",
-          backdropFilter: "blur(20px)",
-          border: "1px solid rgba(255,255,255,0.4)",
-          borderRadius: "24px",
-          padding: "40px",
-          boxShadow:
-            "0 20px 40px rgba(37,99,235,0.15)",
+          minHeight: "100vh",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          background:
+            "linear-gradient(135deg,#dbeafe,#eff6ff,#ffffff)",
+          padding: "20px",
         }}
       >
         <div
           style={{
-            textAlign: "center",
-            marginBottom: "30px",
+            width: "100%",
+            maxWidth: "480px",
+            background: "rgba(255,255,255,0.8)",
+            backdropFilter: "blur(20px)",
+            border: "1px solid rgba(255,255,255,0.4)",
+            borderRadius: "24px",
+            padding: "40px",
+            boxShadow:
+              "0 20px 40px rgba(37,99,235,0.15)",
           }}
         >
-          <h1
+          <div
             style={{
-              color: "#2563eb",
-              marginBottom: "10px",
-              fontSize: "34px",
+              textAlign: "center",
+              marginBottom: "30px",
             }}
           >
-            🚀 AIHireX
-          </h1>
+            <h1
+              style={{
+                color: "#2563eb",
+                marginBottom: "10px",
+                fontSize: "34px",
+              }}
+            >
+              🚀 AIHireX
+            </h1>
 
-          <h2
+            <h2
+              style={{
+                margin: 0,
+                color: "#1e293b",
+              }}
+            >
+              Create Account
+            </h2>
+
+            <p
+              style={{
+                color: "#64748b",
+                marginTop: "10px",
+              }}
+            >
+              Join AI-powered recruitment platform
+            </p>
+          </div>
+
+          <input
+            name="username"
+            placeholder="Username"
+            value={form.username}
+            onChange={handleChange}
+            style={inputStyle}
+          />
+
+          <input
+            type="email"
+            name="email"
+            placeholder="Email Address"
+            value={form.email}
+            onChange={handleChange}
+            style={inputStyle}
+          />
+
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={form.password}
+            onChange={handleChange}
+            style={inputStyle}
+          />
+
+          <button
+            onClick={registerUser}
+            disabled={loading}
             style={{
-              margin: 0,
-              color: "#1e293b",
+              width: "100%",
+              padding: "14px",
+              background:
+                "linear-gradient(135deg,#2563eb,#1d4ed8)",
+              color: "white",
+              border: "none",
+              borderRadius: "12px",
+              cursor: loading
+                ? "not-allowed"
+                : "pointer",
+              fontWeight: "600",
+              fontSize: "16px",
+              marginTop: "10px",
+              opacity: loading ? 0.8 : 1,
             }}
           >
-            Create Account
-          </h2>
+            {loading
+              ? "Creating Account..."
+              : "Create Account"}
+          </button>
 
           <p
             style={{
+              textAlign: "center",
+              marginTop: "20px",
               color: "#64748b",
-              marginTop: "10px",
             }}
           >
-            Join AI-powered recruitment platform
+            Already have an account?{" "}
+            <Link
+              to="/login"
+              style={{
+                color: "#2563eb",
+                textDecoration: "none",
+                fontWeight: "600",
+              }}
+            >
+              Login
+            </Link>
           </p>
         </div>
-
-        <input
-          name="username"
-          placeholder="Username"
-          onChange={handleChange}
-          style={inputStyle}
-        />
-
-        <input
-          name="email"
-          type="email"
-          placeholder="Email Address"
-          onChange={handleChange}
-          style={inputStyle}
-        />
-
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          onChange={handleChange}
-          style={inputStyle}
-        />
-
-        <button
-          onClick={registerUser}
-          disabled={loading}
-          style={{
-            width: "100%",
-            padding: "14px",
-            background:
-              "linear-gradient(135deg,#2563eb,#1d4ed8)",
-            color: "white",
-            border: "none",
-            borderRadius: "12px",
-            cursor: "pointer",
-            fontWeight: "600",
-            fontSize: "16px",
-            marginTop: "10px",
-          }}
-        >
-          {loading
-            ? "Creating Account..."
-            : "Create Account"}
-        </button>
-
-        <p
-          style={{
-            textAlign: "center",
-            marginTop: "20px",
-            color: "#64748b",
-          }}
-        >
-          Already have an account?{" "}
-          <Link
-            to="/login"
-            style={{
-              color: "#2563eb",
-              textDecoration: "none",
-              fontWeight: "600",
-            }}
-          >
-            Login
-          </Link>
-        </p>
       </div>
-    </div>
+    </>
   );
 }
 

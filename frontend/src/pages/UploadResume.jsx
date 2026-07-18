@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Navbar from "../components/Navbar";
 import api from "../services/api";
-
+import PageWrapper from "../components/PageWrapper";
 export default function UploadResume() {
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -51,13 +51,40 @@ export default function UploadResume() {
       );
 
       localStorage.setItem(
-        "match_result",
-        JSON.stringify(matchRes.data)
-      );
+  "match_result",
+  JSON.stringify(matchRes.data)
+);
 
+try {
+  await api.post(
+    "http://localhost:8002/apply",
+    {
+      user_email:
+        localStorage.getItem("user_email") ||
+        "candidate@gmail.com",
+
+      job_title:
+        localStorage.getItem("job_title"),
+
+      company: "TechCorp",
+
+      match_score:
+        matchRes.data.match_score,
+    }
+  );
+
+  console.log("Application Saved");
+} catch (err) {
+  console.log(
+    "Application Save Failed",
+    err
+  );
+}
+
+window.location.href = "/match";
       setLoading(false);
 
-      window.location.href = "/match";
+     
     } catch (err) {
       console.log(err);
 
